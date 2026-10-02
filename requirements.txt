@@ -18,3 +18,4 @@ pytest==9.1.1
 
 # Runtime (contract Part 7).
 sqlglot==30.21.0
+polars==1.44.2
