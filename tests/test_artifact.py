@@ -1,66 +1,108 @@
 """The artifact test - strict rule 6 (house rule 18).
 
-STAMPED AT A1. Phase C writes it FIRST, at checkpoint C0, before any other
-code - the commit hook refuses project code while this file is still the
-stamped placeholder.
+The primary output (contract Part 8) is the executed query result (a Polars
+DataFrame) plus the transparency record for a known question against a
+synthetic SQLite fixture, with the LLM replaced by a scripted stand-in.
 
---------------------------------------------------------------------------
-WHY THIS FILE EXISTS
---------------------------------------------------------------------------
-Every other check in this framework asks whether the code has the right
-SHAPE: the right files, a signed contract, a passing test suite. This is the
-only one that asks whether it does the right THING. A project once passed
-every other check and shipped an output that was 297 characters of nothing,
-because its tests validated the code against the author's own (wrong)
-understanding of its input.
+The fixtures are SYNTHETIC - no real sample was provided (contract Part 8,
+B1). They are built by tests/fixtures/make_fixture.py. Two variants with
+different content prove the pipeline derives rather than recites.
 
---------------------------------------------------------------------------
-WHAT "THE PRIMARY OUTPUT" MEANS - whatever the kind of project
---------------------------------------------------------------------------
-It is named in contract.md Part 8. Examples:
-  - a report or file generator: the file it writes;
-  - an application: the answer a user gets for one realistic request - for
-    a question-answering app, the exact result and the record shown with it;
-  - a library: the value its main entry point returns for a realistic input;
-  - a service: the response to one realistic request.
-
---------------------------------------------------------------------------
-WHAT MAKES THIS TEST DIFFERENT FROM THE ONES IN THE REST OF tests/
---------------------------------------------------------------------------
-1. REALISTIC INPUT - derived from a real sample where one exists (sanitised,
-   trimmed, structurally genuine). If none exists, hand-build it, say so in
-   this docstring, and record it in memory.md under Open questions.
-2. THE WHOLE PATH, entry point to output, the way a user or caller reaches it.
-   No monkeypatching of the project's own internals.
-3. NO CREDENTIAL AND NO NETWORK. An external service (an AI model, an API) is
-   replaced by a scripted stand-in at its boundary - the one place the
-   contract says the outside world enters - never inside the logic.
-4. ASSERT ON CONTENT, not on exit code: a specific value derived from this
-   specific input must appear in the output.
-5. TWO FIXTURES, DIFFERENT CONTENT: if two inputs give the same output, the
-   program is reciting, not deriving.
-
---------------------------------------------------------------------------
-HOW TO REPLACE THIS
---------------------------------------------------------------------------
-Delete `test_artifact_placeholder` below - all of it, including the sentence
-in its failure message - and write the two tests agreed at B3. Keep a
-docstring on each: the next person needs to know what the assertions mean.
-
-IMPORT THE PROJECT INSIDE EACH TEST FUNCTION, not at the top of this file.
-At C0 the code does not exist yet; a top-level import that fails stops pytest
-collecting ANY test, and every checkpoint after it would look red.
+The project is imported INSIDE each test function: at C0 the code does not
+exist yet, and a failing top-level import would stop pytest collecting any
+test.
 """
 
-import pytest
+from tests.fixtures.make_fixture import build_fixture
 
 
-def test_artifact_placeholder():
-    """The stamped placeholder. It fails on purpose until C0 replaces it."""
-    pytest.fail(
-        "ARTIFACT TEST NOT WRITTEN YET - strict rule 6 (house rule 18). "
-        "Replace tests/test_artifact.py at C0 with a test that builds this "
-        "project's primary output (contract.md Part 8) from a realistic "
-        "input, with no credential and no network, and asserts on its "
-        "CONTENT. See project-core phase_C_build.md, C0."
+class ScriptedLLM:
+    """A scripted stand-in for the LLM provider boundary (no network, no key).
+
+    Returns a fixed interpretation, plan and SQL for the known question, and a
+    fixed explanation. The pipeline must treat this as the outside world and
+    never call a real model.
+    """
+
+    def interpret(self, request):
+        return {
+            "intent": "aggregate",
+            "entity": "trades",
+            "metrics": ["notional_value"],
+            "dimensions": ["region"],
+            "filters": [],
+            "time_intent": {"kind": "this_year"},
+            "output": "table",
+            "ambiguities": [],
+        }
+
+    def plan(self, request):
+        return {
+            "intent": "aggregate",
+            "tables": ["trades"],
+            "columns": ["region", "notional_value"],
+            "joins": [],
+            "filters": [],
+            "metrics": ["SUM(notional_value)"],
+            "grouping": ["region"],
+            "ordering": [],
+            "limits": [],
+            "time_bounds": {"start": "2026-01-01", "end": "2026-12-31"},
+            "expected_output": "table",
+        }
+
+    def generate_sql(self, request):
+        return (
+            "SELECT region, SUM(notional_value) AS total FROM trades "
+            "WHERE trade_date >= '2026-01-01' AND trade_date <= '2026-12-31' "
+            "GROUP BY region"
+        )
+
+    def explain(self, request):
+        return "Total notional value by region for 2026."
+
+
+def test_artifact_primary_output(tmp_path):
+    """The known question yields the exact per-region totals and a transparency record."""
+    from app.core.orchestrator import run_turn
+
+    db = build_fixture(str(tmp_path / "trading_fixture.db"), "a")
+
+    turn = run_turn(
+        question="total notional value by region for 2026",
+        db_path=db,
+        llm=ScriptedLLM(),
+        user_id="u1",
+        workspace_id="w1",
     )
+
+    assert turn.error is None
+    rows = {r["region"]: r["total"] for r in turn.result.to_dicts()}
+    assert rows["N"] == 1500000.0
+    assert rows["S"] == 900000.0
+    assert rows["E"] == 600000.0
+
+    assert turn.transparency is not None
+    assert "trades" in turn.transparency.tables_used
+    assert turn.transparency.canonical_sql == turn.canonical_sql
+    assert turn.transparency.resolved_period == ("2026-01-01", "2026-12-31")
+
+
+def test_artifact_second_fixture_derives_not_recites(tmp_path):
+    """A different fixture gives different totals - the pipeline derives, not recites."""
+    from app.core.orchestrator import run_turn
+
+    db = build_fixture(str(tmp_path / "trading_fixture_b.db"), "b")
+
+    turn = run_turn(
+        question="total notional value by region for 2026",
+        db_path=db,
+        llm=ScriptedLLM(),
+        user_id="u1",
+        workspace_id="w1",
+    )
+
+    assert turn.error is None
+    rows = {r["region"]: r["total"] for r in turn.result.to_dicts()}
+    assert rows["W"] == 2500000.0
+    assert rows["C"] == 100000.0

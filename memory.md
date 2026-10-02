@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C0
-Last updated: 2026-10-02T16:48:00Z
+Current checkpoint: C1
+Last updated: 2026-10-02T18:37:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -106,6 +106,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | B2 | DONE | 2026-10-02 | — | contract signed at G0 (Rafael Tacconi, 2026-10-02) |
 | B3 | DONE | 2026-10-02 | — | checkpoint plan (C0–C46) and artifact test approved at G1 |
 | B4 | PASS | 2026-10-02 | 20261002T164736Z_check.json | CONTRACT PASS; Status CONFIRMED; handed to Phase C |
+| C0 | PASS | 2026-10-02 | 20261002T183634Z_check.json | ARTIFACT WRITTEN + CONTRACT PASS; artifact test red for the right reason (no `app` yet); fixtures synthetic |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
@@ -204,7 +205,9 @@ that in one read.*
 question gets silently assumed instead. A `not sure yet` in the contract
 needs a row here naming the field or decision.*
 
-- none at B1 — every contract field holds a real answer.
+- 2026-10-02 — The artifact-test fixture is SYNTHETIC (no real sample was
+  provided, contract Part 8). Built by `tests/fixtures/make_fixture.py`; two
+  variants. — ASKED (B1) / answered: build a synthetic fixture, flagged.
 
 ### Skipped or declined checkpoints
 *Any checkpoint skipped, declined or deferred gets ONE line, with a reason.
