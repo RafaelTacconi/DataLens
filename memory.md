@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C10
-Last updated: 2026-10-02T19:41:00Z
+Current checkpoint: C11
+Last updated: 2026-10-02T19:45:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -116,6 +116,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C7 | PASS | 2026-10-02 | 20261002T192921Z_check.json | CONTRACT + TESTS PASS; guarded read-only connection, not shared |
 | C8 | PASS | 2026-10-02 | 20261002T193240Z_check.json | CONTRACT + TESTS PASS; authorizer rejects writes/attach/pragma, enforces allow-list; blocks load_extension only, not built-in functions |
 | C9 | PASS | 2026-10-02 | 20261002T194041Z_check.json | CONTRACT + TESTS PASS; sqlglot validator rejects unsafe SQL, unknown/hidden tables/columns; sqlglot==30.21.0 pinned |
+| C10 | PASS | 2026-10-02 | 20261002T194410Z_check.json | CONTRACT + TESTS PASS; canonical SQL deterministic, hash stored |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
