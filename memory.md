@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C28
-Last updated: 2026-10-02T21:23:00Z
+Current checkpoint: C29
+Last updated: 2026-10-02T21:26:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -134,6 +134,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C25 | PASS | 2026-10-02 | 20261002T211218Z_check.json | CONTRACT + TESTS PASS; transparency record carries all 13 items |
 | C26 | PASS | 2026-10-02 | 20261002T211934Z_check.json | CONTRACT + TESTS + SMOKE PASS; Streamlit app shell renders; streamlit==1.64.0 pinned |
 | C27 | PASS | 2026-10-02 | 20261002T212204Z_check.json | CONTRACT + TESTS PASS; workspace view shows context, role-gated |
+| C28 | PASS | 2026-10-02 | 20261002T212505Z_check.json | CONTRACT + TESTS PASS; cache keys include file identity + SQL; membership guard |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
