@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C14
-Last updated: 2026-10-02T19:52:00Z
+Current checkpoint: C15
+Last updated: 2026-10-02T19:54:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -120,6 +120,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C11 | PASS | 2026-10-02 | 20261002T194634Z_check.json | CONTRACT + TESTS PASS; executor returns Polars DataFrame, fetch cap enforced; polars==1.44.2 pinned |
 | C12 | PASS | 2026-10-02 | 20261002T194839Z_check.json | CONTRACT + TESTS PASS; query-run audit logging leaves a row |
 | C13 | PASS | 2026-10-02 | 20261002T195124Z_check.json | CONTRACT + TESTS PASS; turn state machine, rerun does not repeat work |
+| C14 | PASS | 2026-10-02 | 20261002T195317Z_check.json | CONTRACT + TESTS PASS; provider-neutral LLM Protocol, stand-in accepted |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
