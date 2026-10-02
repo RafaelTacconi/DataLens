@@ -105,6 +105,20 @@ CREATE TABLE IF NOT EXISTS audit_events (
     before_json TEXT,
     after_json TEXT
 );
+
+-- R3: audit rows are append-only. Application code cannot update or delete
+-- them; the triggers abort either attempt at the database level.
+CREATE TRIGGER IF NOT EXISTS audit_events_no_update
+BEFORE UPDATE ON audit_events
+BEGIN
+    SELECT RAISE(ABORT, 'audit_events are append-only');
+END;
+
+CREATE TRIGGER IF NOT EXISTS audit_events_no_delete
+BEFORE DELETE ON audit_events
+BEGIN
+    SELECT RAISE(ABORT, 'audit_events are append-only');
+END;
 """
 
 
