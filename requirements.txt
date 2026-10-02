@@ -15,3 +15,6 @@
 # Test-only: the gate and AGENTS.md name `python -m pytest -q` as the test
 # command, so a fresh clone must be able to run it.
 pytest==9.1.1
+
+# Runtime (contract Part 7).
+sqlglot==30.21.0
