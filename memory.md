@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
-Status: IN PROGRESS | BLOCKED | COMPLETE
-Current checkpoint: <e.g. C3>
-Last updated: <ISO timestamp>
+Status: IN PROGRESS
+Current checkpoint: B0
+Last updated: 2026-10-02T11:13:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -9,24 +9,26 @@ conventions were got wrong on the first attempt in four or more separate
 instances across two real builds, re-discovered every time, and never written
 down.*
 
-- **Shell:** <PowerShell 5.1 / pwsh 7 / bash — and which one the agent should
-  assume when it writes a command>
-- **Path separator:** <`\` on Windows; note any place forward slashes are
-  required anyway>
-- **Activate the venv:** <the exact line, e.g. `.venv\Scripts\activate`>
-- **Anything that bit last time:** <one line per gotcha>
+- **Shell:** Windows cmd.exe (the default shell). Commands are written for
+  cmd.exe; `&&` chains conditionally.
+- **Path separator:** `\` on Windows. Forward slashes work in most Python and
+  git contexts.
+- **Activate the venv:** `.venv\Scripts\activate`
+- **Anything that bit last time:** none yet. LF→CRLF warnings on `git add`
+  are expected and harmless (`.gitattributes` keeps the hook's line endings LF).
 
 ## Handoff state
-Current phase: <e.g. C — Build>
-Phase done condition: <copied verbatim from the PHASE MAP in project-core's SKILL.md>
-Phase status: NOT READY | READY | PASSED TO: <next phase>
+Current phase: B — Contract and plan
+Phase done condition: contract signed (G0), plan approved (G1), seal (B4)
+Phase status: PASSED TO: B
 
 ## Blockers (current)
-- <what is blocking; what human input is needed>
+- none
 
 ## Resume instructions
 FIRST: activate the venv — Windows: .venv\Scripts\activate
-Next action: <exact next checkpoint and its first step>
+Next action: B0 — read the two source documents in full, then ask only the
+gaps, then draft contract.md Parts 1–8 for the builder to sign (gate G0).
 
 *Everything above this line is CURRENT and gets overwritten. Everything below
 is a RECORD and is only ever appended to.*
@@ -48,6 +50,9 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 ## Checkpoint log
 | CP | Status | Date | Receipt | Evidence / notes |
 |----|--------|------|---------|------------------|
+| A0 | DONE | 2026-10-02 | — | venv created, pytest installed; `sys.prefix != sys.base_prefix` = True |
+| A1 | DONE | 2026-10-02 | — | git init, identity Rafael Tacconi <tacconirafael@gmail.com>, framework files stamped, hook installed, docs registered, pushed to origin (github.com:RafaelTacconi/DataLens) |
+| A2 | DONE | 2026-10-02 | — | environment recorded; handed to Phase B |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
