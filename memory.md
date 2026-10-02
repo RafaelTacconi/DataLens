@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C22
-Last updated: 2026-10-02T20:40:00Z
+Current checkpoint: C23
+Last updated: 2026-10-02T20:55:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -128,6 +128,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C19 | PASS | 2026-10-02 | 20261002T203238Z_check.json | CONTRACT + TESTS PASS; structured interpretation parsed, malformed rejected |
 | C20 | PASS | 2026-10-02 | 20261002T203651Z_check.json | CONTRACT + TESTS PASS; clarification decision in orchestrator |
 | C21 | PASS | 2026-10-02 | 20261002T203911Z_check.json | CONTRACT + TESTS PASS; query plan built and rendered in plain language |
+| C22 | PASS | 2026-10-02 | 20261002T205426Z_check.json | CONTRACT + TESTS PASS; SQL draft validated before execution; prompts.py created |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
