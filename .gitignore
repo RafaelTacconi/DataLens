@@ -1,0 +1,29 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# credentials: the real keys. .env.example IS committed; .env never is.
+.env
+# Streamlit keeps its secrets here; never committed either.
+.streamlit/secrets.toml
+
+# machine evidence receipts. Written by verify_build.py on every run, one
+# file per run, so the FOLDER stays ignored. memory.md cites some of them by
+# name, and every CITED receipt is committed with its checkpoint:
+# git add -f .evidence/<file>
+.evidence/
+
+# Real files used while building or running: inputs, outputs, databases,
+# uploads. NEVER committed - they may be real business data.
+data/
+logs/
+build/
+dist/
+
+# Discovery sessions stay on the builder's machine - never committed.
+skills_output/data-exploration/
+skills_output/**/artifacts/
+skills_output/**/evidence/
+skills_output/**/scratch/
+skills_output/**/*.tmp

@@ -1,0 +1,17 @@
+# DataLens-v1 — pinned dependencies
+#
+# PINNED (== not >=): the release tag must describe what actually runs. An
+# unpinned rebuild from the tag can install something different from what
+# was tested.
+#
+# ADDING ONE: agree it with the builder first, then a Part 7 row in
+# contract.md (library, version, why, what breaks without it), then the line
+# here, then prove it still runs from a clean checkout.
+#
+# A package the project needs but never imports (a plugin, a runtime extra)
+# ends its line with:  # not imported: <why>
+# - the release gate accepts it only with the reason.
+
+# Test-only: the gate and AGENTS.md name `python -m pytest -q` as the test
+# command, so a fresh clone must be able to run it.
+pytest==9.1.1

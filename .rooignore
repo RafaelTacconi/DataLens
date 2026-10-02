@@ -1,0 +1,49 @@
+# .rooignore — what the AGENT must not read into its context.
+#
+# NOT the same job as .gitignore. .gitignore protects the REPOSITORY from
+# files that should never be committed. This protects the CONVERSATION from
+# files that should never be read: raw business data, database snapshots, and
+# large generated output.
+#
+# CONFIDENTIALITY FIRST, COST SECOND. `data-exploration` already forbids
+# PASTING identifying rows into insights.md. Nothing until wave 33 prevented
+# the agent from READING the whole corpus into context in the first place -
+# and a rule about what may be written down does not cover what has already
+# been looked at.
+#
+# THIS DOES NOT CONTRADICT THE COMPATIBILITY RECORD'S REJECTION OF
+# .rooignore. That rejection concerns placing one inside somebody ELSE'S
+# external project, which is a modification of their repository. This is the
+# framework's own project hiding its own raw data from its own agent.
+# Different repository, different purpose. There is no contradiction to
+# resolve.
+#
+# FIXTURES STAY READABLE. tests/fixtures/ is sanitised structure by rule, it
+# is what the agent must read to write a reader, and excluding it would break
+# the build loop.
+
+# local environment and build output
+.venv/
+__pycache__/
+dist/
+build/
+
+# real business files used while building
+data/
+
+# credentials
+.env
+
+# machine evidence receipts (wave 38): one JSON file per run, and a long
+# build makes many. The agent cites them BY NAME from memory.md; it has no
+# reason to read the whole folder into context.
+.evidence/
+
+# station exhaust: may hold large raw query output
+skills_output/**/artifacts/
+
+# large binaries the agent should never read whole
+*.parquet
+*.db
+*.db-wal
+*.db-shm

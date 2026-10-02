@@ -1,0 +1,7 @@
+# Line endings that must not depend on the machine (wave 43).
+#
+# The commit hook is a shell script. Checked out with Windows line endings
+# (git's core.autocrlf=true does that), "sh" reads "set -e\r" and the hook
+# fails on every commit, or is skipped. These files always keep LF.
+hooks/pre-commit  text eol=lf
+*.sh              text eol=lf

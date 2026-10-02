@@ -1,0 +1,95 @@
+#!/bin/sh
+# pre-commit — stamped into <project>/hooks/ at phase A (project-core).
+#
+# WHY THIS EXISTS
+# Every mechanical check in this framework is a script with a pass/fail
+# answer. Here they run on every commit: on pass, silence and the commit
+# proceeds; on fail, the commit stops and names what broke.
+#
+# Two of them are the build discipline itself, made mechanical (wave 43):
+# no project code is committed before the contract is signed, and none
+# before the artifact test is written. A real build wrote three thousand
+# lines with neither; an instruction did not stop it, this does.
+#
+# `git commit --no-verify` skips the hook. That is deliberate - a check that
+# cannot be bypassed gets bypassed by deleting the hook, and then nobody
+# knows it is gone - but it is NEVER the answer to the two order rules or to
+# a made-up git identity. Use it only for something else, and say why in the
+# commit message.
+#
+# INSTALLED BY: git config core.hooksPath hooks   (once, at phase A)
+
+set -e
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+# Prefer the project venv; fall back to a python on PATH that actually RUNS
+# (on Windows, "python3" can be the Microsoft Store stub, which prints an
+# advert and fails - so every candidate is tried before it is trusted).
+PY=""
+for cand in ".venv/Scripts/python.exe" ".venv/bin/python" python python3 py; do
+  if "$cand" -c "import sys" >/dev/null 2>&1; then PY="$cand"; break; fi
+done
+
+if [ -z "$PY" ]; then
+  echo "pre-commit: no working python found - the project checks did not run."
+  echo "            Create the venv (python -m venv .venv) and commit again."
+  exit 1
+fi
+
+fail=0
+
+# 1. Secrets. A key in git is a key that has leaked; rotation is the only
+#    fix. Staged content only.
+#    The whole staged diff is read at once, so a file name with a space in it
+#    is scanned like any other.
+if ! git diff --cached --quiet --diff-filter=ACM; then
+  if git diff --cached -U0 --diff-filter=ACM 2>/dev/null | grep -nEi \
+      '^\+.*(sk-[A-Za-z0-9_-]{20,}|api[_-]?key[[:space:]]*=[[:space:]]*["'"'"'][^"'"'"']{16,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)' \
+      >/dev/null; then
+    echo ""
+    echo "  x SECRET-SHAPED STRING IN A STAGED FILE"
+    echo "      A key in git is a key that has leaked. Put it in .env (never"
+    echo "      committed; copy .env.example) and commit only its NAME."
+    fail=1
+  fi
+fi
+
+# 2. The project's gate in HOOK mode: structure, a real git identity, data
+#    and secrets kept out of git, placeholders, encoding, absolute paths, and
+#    the two order rules. No receipt is written.
+if [ -f "scripts/verify_build.py" ]; then
+  if ! out="$("$PY" scripts/verify_build.py --hook 2>&1)"; then
+    echo ""
+    if echo "$out" | grep -q "FAIL"; then
+      echo "$out" | grep -E "FAIL|verify_build --hook" | sed 's/^/  /'
+    else
+      # It stopped without naming a check (a crash, a missing module):
+      # show the end of what it printed, never a bare "Commit stopped".
+      echo "  x scripts/verify_build.py --hook stopped without a verdict:"
+      echo "$out" | tail -n 15 | sed 's/^/      /'
+    fi
+    fail=1
+  fi
+fi
+
+# 3. The UI gate, when this project has a Streamlit screen built by the
+#    streamlit-ui-shell station.
+if [ -f "scripts/verify_ui_build.py" ]; then
+  if ! out="$("$PY" scripts/verify_ui_build.py 2>&1)"; then
+    echo ""
+    echo "  x verify_ui_build.py"
+    echo "$out" | tail -n 25 | sed 's/^/      /'
+    fail=1
+  fi
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "  Commit stopped. Fix the above and commit again."
+  echo ""
+  exit 1
+fi
+
+exit 0
