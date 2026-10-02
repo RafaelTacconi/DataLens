@@ -6,6 +6,7 @@ queries, evaluation cases, query runs and audit events. It is always a
 different file from every target business database (SDD §4, §10).
 """
 
+import datetime
 import sqlite3
 
 _SCHEMA = """
@@ -137,3 +138,27 @@ def open_metadata_db(path):
     conn.executescript(_SCHEMA)
     conn.commit()
     return conn
+
+
+def _now():
+    """The current UTC timestamp as an ISO string."""
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def create_workspace(conn, workspace_id, name, target_db_path,
+                     egress_level="schema_only"):
+    """Create a workspace row in the metadata store.
+
+    Args:
+        conn: the metadata sqlite3 connection.
+        workspace_id: the workspace's stable id.
+        name: a human-readable name.
+        target_db_path: the target SQLite database path.
+        egress_level: the workspace's LLM egress level (default schema_only).
+    """
+    conn.execute(
+        "INSERT INTO workspaces (id, name, target_db_path, egress_level, "
+        "created_at) VALUES (?, ?, ?, ?, ?)",
+        (workspace_id, name, target_db_path, egress_level, _now()),
+    )
+    conn.commit()
