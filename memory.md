@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: B0
-Last updated: 2026-10-02T11:13:00Z
+Current checkpoint: C0
+Last updated: 2026-10-02T16:48:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -18,17 +18,18 @@ down.*
   are expected and harmless (`.gitattributes` keeps the hook's line endings LF).
 
 ## Handoff state
-Current phase: B — Contract and plan
-Phase done condition: contract signed (G0), plan approved (G1), seal (B4)
-Phase status: PASSED TO: B
+Current phase: C — Build
+Phase done condition: the artifact test FIRST (C0), then test-first checkpoints C1..Cn
+Phase status: PASSED TO: C
 
 ## Blockers (current)
 - none
 
 ## Resume instructions
 FIRST: activate the venv — Windows: .venv\Scripts\activate
-Next action: B0 — read the two source documents in full, then ask only the
-gaps, then draft contract.md Parts 1–8 for the builder to sign (gate G0).
+Next action: C0 — write the artifact test first (tests/test_artifact.py)
+against the synthetic fixture with a scripted LLM stand-in, then build the
+checkpoints C1..Cn test-first.
 
 *Everything above this line is CURRENT and gets overwritten. Everything below
 is a RECORD and is only ever appended to.*
@@ -46,6 +47,53 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 `## Additions after sign-off` table.
 | CP | Tag | From contract | What is built | Accept test (observable) | Approved |
 |----|-----|---------------|---------------|--------------------------|----------|
+| C0 | STRICT | Part 8 / rule 6 | The artifact test: builds the primary output from the synthetic fixture with a scripted LLM stand-in and asserts on its content. | `python -m pytest tests/test_artifact.py` — red now, green once the pipeline exists. | |
+| C1 | DEFAULT | R1 | Configuration module (`app/config/settings.py`) loading every setting from the environment. | Test: config loads; no absolute path in code. | |
+| C2 | DEFAULT | R2 | Metadata store schema (`app/metadata/store.py`, `models.py`) — WAL SQLite with all tables. | Test: every table exists. | |
+| C3 | DEFAULT | R3 | Audit append-only (`app/metadata/audit.py`). | Test: UPDATE/DELETE on audit rows fail. | |
+| C4 | DEFAULT | R4 | Identity resolution (`app/core/permissions.py`). | Test: resolves the OS user and records the source. | |
+| C5 | DEFAULT | R5 | Workspace membership, roles, last-Owner protection (`app/core/permissions.py`). | Test: role matrix and last-Owner protection. | |
+| C6 | DEFAULT | R6 | Path policy (`app/db/path_policy.py`). | Test: rejects each bad path. | |
+| C7 | DEFAULT | R7 | Guarded read-only connection (`app/db/connection.py`). | Test: read-only; connections not shared. | |
+| C8 | DEFAULT | R8 | Authorizer (`app/db/authorizer.py`). | Test: each prohibited action rejected. | |
+| C9 | DEFAULT | R9 | SQL validator (`app/sql/validator.py`). | Test: rejects unsafe/mismatched; accepts valid. | |
+| C10 | DEFAULT | R10 | Canonical SQL (`app/sql/canonical.py`). | Test: displayed equals executed; hash matches. | |
+| C11 | DEFAULT | R11 | Executor (`app/db/executor.py`). | Test: Polars DataFrame; fetch cap enforced. | |
+| C12 | DEFAULT | R12 | Audit logging of governance and query actions. | Test: an audited action leaves a row. | |
+| C13 | DEFAULT | R13 | Turn state machine (`app/core/state.py`). | Test: a rerun repeats no LLM call or query. | |
+| C14 | DEFAULT | R14 | LLM provider interface (`app/llm/provider.py`). | Test: a stand-in provider runs the pipeline. | |
+| C15 | DEFAULT | R43 | Typed data contracts (`app/models/contracts.py`). | Test: each model constructs; malformed input rejected. | |
+| C16 | DEFAULT | R35 | Egress policy (`app/llm/egress.py`). | Test: the level controls what is sent; default safest. | |
+| C17 | DEFAULT | R15 | Schema inspection (`app/db/schema.py`). | Test: fixture tables and columns found. | |
+| C18 | DEFAULT | R16 | Catalog, business context and business terms. | Test: store/retrieve; a not-exposed object is hidden and rejected. | |
+| C19 | DEFAULT | R17 | Query understanding (`app/llm/structured_output.py`). | Test: a stand-in interpretation parses into the model. | |
+| C20 | DEFAULT | R18 | Clarification (`app/core/orchestrator.py`). | Test: an ambiguous question yields a clarification. | |
+| C21 | DEFAULT | R19 | Query plan (`app/sql/plan_checker.py`). | Test: a plan is built and shown. | |
+| C22 | DEFAULT | R20 | SQL generation (`app/llm/prompts.py`). | Test: the draft passes validation before execution. | |
+| C23 | DEFAULT | R21 | Result display (`app/ui/chat.py`). | Test: table equals the DataFrame; 30-row cap. | |
+| C24 | DEFAULT | R22 | CSV export (`app/utils/export.py`). | Test: CSV matches the DataFrame. | |
+| C25 | DEFAULT | R23 | Transparency panel (`app/ui/transparency.py`). | Test: all 13 items present. | |
+| C26 | DEFAULT | R13 | Streamlit app shell (`app/main.py`) wiring the views. | Test: `AppTest` imports `app.main` and renders. | |
+| C27 | DEFAULT | R16, R5 | Workspace view (`app/ui/workspace.py`). | Test: `AppTest` shows workspace/context; role-gated. | |
+| C28 | DEFAULT | R36 | Caching (`app/core/cache.py`). | Test: a file change is not served stale; membership checked. | |
+| C29 | DEFAULT | R37 | Database update behavior. | Test: a file change yields fresh data with no restart. | |
+| C30 | DEFAULT | R24 | Time resolution (`app/core/time_resolution.py`). | Test: each relative date resolved against a fixed clock and timezone. | |
+| C31 | DEFAULT | R25 | Profiles (`app/db/profiles.py`). | Test: sensitive columns excluded. | |
+| C32 | DEFAULT | R26 | Facts payload (`app/analysis/facts.py`). | Test: facts built from a result. | |
+| C33 | DEFAULT | R27 | Number verifier (`app/analysis/verifier.py`). | Test: an invented number fails; a correct one passes. | |
+| C34 | DEFAULT | R28 | Feedback (`app/core/orchestrator.py`). | Test: feedback creates a new turn and an audit row. | |
+| C35 | DEFAULT | R29 | Query history storage. | Test: a run is stored and retrievable. | |
+| C36 | DEFAULT | R29 | History view (`app/ui/history.py`). | Test: `AppTest` shows stored runs. | |
+| C37 | DEFAULT | R30 | Verified query library (`app/accuracy/verified_queries.py`). | Test: promote; a schema change marks needs_recheck. | |
+| C38 | DEFAULT | R31 | Evaluation set (`app/accuracy/evals.py`). | Test: a case runs and compares results. | |
+| C39 | DEFAULT | R32 | Analysis mode. | Test: a multi-step analysis; each output names its source. | |
+| C40 | DEFAULT | R33 | Execution tiers (`app/core/tiers.py`). | Test: classification; Extended requires confirmation. | |
+| C41 | DEFAULT | R34 | Charts (`app/analysis/charts.py`). | Test: a chart is built from a result. | |
+| C42 | DEFAULT | R38 | Error handling (`app/core/orchestrator.py`). | Test: attempt limit, timeout message and each refusal. | |
+| C43 | DEFAULT | R40 | Honest execution metrics. | Test: only measured metrics are shown. | |
+| C44 | DEFAULT | R41 | Follow-ups. | Test: a follow-up changes the plan and the change is shown. | |
+| C45 | DEFAULT | R42 | Prompt versioning (`app/llm/prompts.py`). | Test: the version is recorded on a turn. | |
+| C46 | DEFAULT | R39 | Security test suite (`tests/test_security.py`). | Test: each control is attacked and holds. | |
 
 ## Checkpoint log
 | CP | Status | Date | Receipt | Evidence / notes |
@@ -53,6 +101,11 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | A0 | DONE | 2026-10-02 | — | venv created, pytest installed; `sys.prefix != sys.base_prefix` = True |
 | A1 | DONE | 2026-10-02 | — | git init, identity Rafael Tacconi <tacconirafael@gmail.com>, framework files stamped, hook installed, docs registered, pushed to origin (github.com:RafaelTacconi/DataLens) |
 | A2 | DONE | 2026-10-02 | — | environment recorded; handed to Phase B |
+| B0 | DONE | 2026-10-02 | — | both source documents read end to end; Parts 1, 2, 4, 6, 7, 8 drafted |
+| B1 | DONE | 2026-10-02 | — | gaps asked and answered; decisions recorded in Part 5 |
+| B2 | DONE | 2026-10-02 | — | contract signed at G0 (Rafael Tacconi, 2026-10-02) |
+| B3 | DONE | 2026-10-02 | — | checkpoint plan (C0–C46) and artifact test approved at G1 |
+| B4 | PASS | 2026-10-02 | 20261002T164736Z_check.json | CONTRACT PASS; Status CONFIRMED; handed to Phase C |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
@@ -98,7 +151,34 @@ document already said" is worth more than "fine".
 - **A1 — Framework version: `project-core v1.1`.** The phase files and
   `scripts/verify_build.py` in this repo came from it. Update this line only
   when the project deliberately takes an upgrade.
-- <date> — <decision> — <why> — **BUILDER** or **AGENT**
+- 2026-10-02 — Build on the framework's core (`project-core v1.1`), chosen by
+  the builder over plain Roo Code. — **BUILDER**
+- 2026-10-02 — Approved-data-root path check DROPPED; any SQLite file the user
+  can access is accepted. Safety comes from read-only access, schema-only
+  egress and sensitive-column exclusion instead. — **BUILDER** (deliberate
+  departure from SDD §6.1/§43)
+- 2026-10-02 — Timezone is the end-user's machine timezone (read from the
+  browser once per session, server fallback), not a single configured value.
+  — **BUILDER** (departs from SDD §18/§45)
+- 2026-10-02 — LLM access is OpenAI through OpenRouter only; the model string
+  lives in `.env` as `LLM_MODEL`; the API key is supplied by the builder and
+  never requested. — **BUILDER**
+- 2026-10-02 — Caps and retention: 30 rows in chat, 10,000-row CSV export,
+  30 s query timeout, 1 year audit retention, 30 days query-history retention.
+  — **BUILDER**
+- 2026-10-02 — Execution tiers: Simple (0–1 joins, no analysis), Standard
+  (2–3 joins or 1–2 analysis steps), Extended (4+ joins, nested subqueries or
+  3+ steps; shows the plan and asks for confirmation). — **BUILDER**
+- 2026-10-02 — Release scope: all four V1 phases (SDD §44); Phase 5 stays
+  future work. — **BUILDER**
+- 2026-10-02 — Identity is the OS user (UID + username), fetched, never asked.
+  — **BUILDER**
+- 2026-10-02 — Tests live in `tests/` at the project root (the framework's
+  fixed point); the SDD §40 suggestion of `app/tests/` is not followed.
+  — **AGENT**
+- 2026-10-02 — Contract signed at G0 (Rafael Tacconi, 2026-10-02). — **BUILDER**
+- 2026-10-02 — Checkpoint plan (47 checkpoints, C0–C46) and the artifact test
+  approved at G1. — **BUILDER**
 
 *The last word says who decided: the BUILDER, or the AGENT with the builder
 not objecting. The second is the real risk with one builder and no second
@@ -124,7 +204,7 @@ that in one read.*
 question gets silently assumed instead. A `not sure yet` in the contract
 needs a row here naming the field or decision.*
 
-- <date> — <the question> — <what it would change if answered> — ASKED / UNASKED
+- none at B1 — every contract field holds a real answer.
 
 ### Skipped or declined checkpoints
 *Any checkpoint skipped, declined or deferred gets ONE line, with a reason.
@@ -141,4 +221,9 @@ answer either way.*
   PROJECT-SPECIFIC — <why>
 
 ## Deviations from plan
-- <what differs and why; empty is the goal>
+- 2026-10-02 — Approved-data-root check dropped (SDD §6.1/§43). Recorded as a
+  builder decision in contract Part 5; R6 amended.
+- 2026-10-02 — Timezone per user machine, not centrally configured (SDD
+  §18/§45). Recorded in contract Part 5; R24 amended.
+- 2026-10-02 — Chat row cap is 30, not the SDD §24 "at most 50". Recorded in
+  contract Part 5; R21 amended.
