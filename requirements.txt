@@ -20,3 +20,4 @@ pytest==9.1.1
 sqlglot==30.21.0
 polars==1.44.2
 pydantic==2.13.5
+streamlit==1.64.0

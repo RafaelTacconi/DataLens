@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C26
-Last updated: 2026-10-02T21:13:00Z
+Current checkpoint: C27
+Last updated: 2026-10-02T21:20:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -132,6 +132,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C23 | PASS | 2026-10-02 | 20261002T205735Z_check.json | CONTRACT + TESTS PASS; result display matches DataFrame, 30-row cap |
 | C24 | PASS | 2026-10-02 | 20261002T210550Z_check.json | CONTRACT + TESTS PASS; CSV export from DataFrame, capped |
 | C25 | PASS | 2026-10-02 | 20261002T211218Z_check.json | CONTRACT + TESTS PASS; transparency record carries all 13 items |
+| C26 | PASS | 2026-10-02 | 20261002T211934Z_check.json | CONTRACT + TESTS + SMOKE PASS; Streamlit app shell renders; streamlit==1.64.0 pinned |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
