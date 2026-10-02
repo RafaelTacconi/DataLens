@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C8
-Last updated: 2026-10-02T19:30:00Z
+Current checkpoint: C9
+Last updated: 2026-10-02T19:33:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -114,6 +114,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C5 | PASS | 2026-10-02 | 20261002T192502Z_check.json | CONTRACT + TESTS PASS; role matrix + last-Owner protection |
 | C6 | PASS | 2026-10-02 | 20261002T192746Z_check.json | CONTRACT + TESTS PASS; path policy rejects bad paths |
 | C7 | PASS | 2026-10-02 | 20261002T192921Z_check.json | CONTRACT + TESTS PASS; guarded read-only connection, not shared |
+| C8 | PASS | 2026-10-02 | 20261002T193240Z_check.json | CONTRACT + TESTS PASS; authorizer rejects writes/attach/pragma, enforces allow-list; blocks load_extension only, not built-in functions |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
