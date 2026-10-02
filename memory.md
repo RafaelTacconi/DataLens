@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C6
-Last updated: 2026-10-02T19:26:00Z
+Current checkpoint: C7
+Last updated: 2026-10-02T19:28:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -112,6 +112,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C3 | PASS | 2026-10-02 | 20261002T190140Z_check.json | CONTRACT + TESTS PASS; audit append-only via triggers (IntegrityError on UPDATE/DELETE) |
 | C4 | PASS | 2026-10-02 | 20261002T192013Z_check.json | CONTRACT + TESTS PASS; identity resolved from OS, source recorded |
 | C5 | PASS | 2026-10-02 | 20261002T192502Z_check.json | CONTRACT + TESTS PASS; role matrix + last-Owner protection |
+| C6 | PASS | 2026-10-02 | 20261002T192746Z_check.json | CONTRACT + TESTS PASS; path policy rejects bad paths |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
