@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C2
-Last updated: 2026-10-02T18:45:00Z
+Current checkpoint: C3
+Last updated: 2026-10-02T18:54:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -108,6 +108,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | B4 | PASS | 2026-10-02 | 20261002T164736Z_check.json | CONTRACT PASS; Status CONFIRMED; handed to Phase C |
 | C0 | PASS | 2026-10-02 | 20261002T183634Z_check.json | ARTIFACT WRITTEN + CONTRACT PASS; artifact test red for the right reason (no `app` yet); fixtures synthetic |
 | C1 | PASS | 2026-10-02 | 20261002T184440Z_check.json | CONTRACT + TESTS PASS; config module loads every setting; no absolute path |
+| C2 | PASS | 2026-10-02 | 20261002T185326Z_check.json | CONTRACT + TESTS PASS; metadata store WAL with all tables |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
