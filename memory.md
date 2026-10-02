@@ -142,7 +142,7 @@ place.*
 
 | Phase | Checkpoints run | Back-and-forth exchanges | Which felt unnecessary |
 |-------|-----------------|--------------------------|------------------------|
-|       |                 |                          |                        |
+| B | B0–B4 (5) | 4 (B1 batch, proposals, G0, G1) | none — the batched B1 questions and the two approval turns were all necessary |
 
 **Be blunt in the last column.** "B1 — three turns re-asking what the design
 document already said" is worth more than "fine".
