@@ -46,3 +46,26 @@ def append_audit(conn, event_type, workspace_id=None, actor=None,
     )
     conn.commit()
     return cur.lastrowid
+
+
+def log_query_run(conn, workspace_id, user_id, question, canonical_sql):
+    """Audit a query run (R12).
+
+    Args:
+        conn: the metadata sqlite3 connection.
+        workspace_id: the workspace the query ran in.
+        user_id: the user who asked the question.
+        question: the user's natural-language question.
+        canonical_sql: the canonical SQL that was executed.
+
+    Returns:
+        The id of the inserted audit row.
+    """
+    return append_audit(
+        conn,
+        event_type="query_run",
+        workspace_id=workspace_id,
+        actor=user_id,
+        identity_source="os",
+        target=canonical_sql,
+    )
