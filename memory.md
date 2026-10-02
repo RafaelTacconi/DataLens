@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C15
-Last updated: 2026-10-02T19:54:00Z
+Current checkpoint: C16
+Last updated: 2026-10-02T20:01:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -121,6 +121,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C12 | PASS | 2026-10-02 | 20261002T194839Z_check.json | CONTRACT + TESTS PASS; query-run audit logging leaves a row |
 | C13 | PASS | 2026-10-02 | 20261002T195124Z_check.json | CONTRACT + TESTS PASS; turn state machine, rerun does not repeat work |
 | C14 | PASS | 2026-10-02 | 20261002T195317Z_check.json | CONTRACT + TESTS PASS; provider-neutral LLM Protocol, stand-in accepted |
+| C15 | PASS | 2026-10-02 | 20261002T200027Z_check.json | CONTRACT + TESTS PASS; 13 typed Pydantic contracts, malformed rejected; pydantic==2.13.5 pinned |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
