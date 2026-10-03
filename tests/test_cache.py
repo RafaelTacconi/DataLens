@@ -19,8 +19,8 @@ def test_schema_key_changes_when_file_changes(tmp_path):
     db = build_fixture(str(tmp_path / "trades.db"), "a")
     k1 = schema_cache_key(db)
     conn = sqlite3.connect(db)
-    conn.execute(
-        "INSERT INTO trades VALUES (99, 'N', 'GOLD', 1.0, '2026-01-01')")
+    conn.execute("CREATE TABLE new_table (x INTEGER)")
+    conn.execute("INSERT INTO new_table VALUES (1), (2), (3)")
     conn.commit()
     conn.close()
     k2 = schema_cache_key(db)
