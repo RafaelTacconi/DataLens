@@ -1,0 +1,30 @@
+{
+  "builder": "rafae@Tacconi",
+  "checks": {
+    "ARTIFACT (strict rule 6: the output is right)": "FAIL",
+    "ARTIFACT WRITTEN (C0: a real test, not the placeholder)": "PASS",
+    "CONTRACT (contract.md)": "PASS",
+    "DEPENDENCIES (declared == imported == contract)": "FAIL",
+    "ENCODING (house rule 1: no cp1252 round trip)": "PASS",
+    "EVIDENCE (every PASS row cites a receipt)": "PASS",
+    "GIT (identity, hook installed)": "PASS",
+    "GITIGNORE (data, secrets and receipts stay out of git)": "PASS",
+    "MARKERS (no scaffold residue)": "PASS",
+    "NO ABSOLUTE PATHS": "PASS",
+    "PLACEHOLDER survival": "PASS",
+    "README (written for a reader, not the builder)": "FAIL",
+    "SMOKE (the contract's smoke command)": "PASS",
+    "STRUCTURE": "PASS",
+    "TESTS (pytest)": "PASS"
+  },
+  "command": "scripts\\verify_build.py",
+  "contract_file": "contract.md",
+  "contract_sha256": "3dc126813e416b26430c16f8643364485d7f203205f719a486fad0d093db1ef5",
+  "exit_code": 1,
+  "gate_sha256": "30a47521d51e285076c09ce23e56484da56e513faa307f96987a86487f56e858",
+  "git_sha": "59f9cbe49e74408b68f3c66f382e75621f2afa13",
+  "kind": "check",
+  "note": "DEV gate",
+  "row_counts": {},
+  "written_at": "2026-10-03T07:16:40.146591+00:00"
+}
