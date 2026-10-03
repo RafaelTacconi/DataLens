@@ -20,7 +20,7 @@ down.*
 ## Handoff state
 Current phase: R — Release
 Phase done condition: clean-checkout proof, README for a stranger, version row, --release GO, tag
-Phase status: PASSED TO: R (release v1.0.0 in progress)
+Phase status: COMPLETE — v1.0.0 released and tagged
 
 ## Blockers (current)
 - none
@@ -154,6 +154,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C46 | PASS | 2026-10-03 | 20261003T150549Z_check.json | CONTRACT + TESTS PASS; security suite attacks each control and holds |
 | R1 | PASS | 2026-10-03 | 20261003T191813Z_check.json | clean checkout: 130 tests + smoke pass with only requirements.txt; gate TESTS + ARTIFACT PASS |
 | R2 | PASS | 2026-10-03 | 20261003T191813Z_check.json | README written for a stranger; gate README PASS |
+| R3 | PASS | 2026-10-03 | 20261003T192055Z_check.json | release gate GO (17/17); v1.0.0 tagged and pushed |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
