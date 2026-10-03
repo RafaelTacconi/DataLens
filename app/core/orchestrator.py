@@ -4,6 +4,10 @@ Coordinates the stages of a turn. This module holds no SQL parser internals
 and no UI rendering (Guide §4). It grows checkpoint by checkpoint.
 """
 
+import uuid
+
+from app.metadata.audit import append_audit
+from app.models.contracts import Turn
 from app.sql.canonical import canonicalize_sql
 from app.sql.validator import validate_sql
 
@@ -40,3 +44,36 @@ def generate_and_validate_sql(provider, plan, schema, allowed_tables):
     draft = provider.generate_sql({"plan": plan})
     validate_sql(draft, schema, allowed_tables, plan)
     return canonicalize_sql(draft)
+
+
+def record_feedback(conn, turn, feedback, correction_text=None):
+    """Record feedback on a turn (R28).
+
+    A "not what I meant" correction creates a new turn and is audited; the
+    previous turn is never silently modified.
+
+    Args:
+        conn: the metadata sqlite3 connection.
+        turn: the Turn the feedback concerns.
+        feedback: "correct" or "not_what_i_meant".
+        correction_text: the user's correction, for a "not what I meant".
+
+    Returns:
+        A new Turn for a correction, or None for a correct result.
+    """
+    append_audit(
+        conn,
+        event_type="user_feedback",
+        workspace_id=turn.workspace_id,
+        actor=turn.user_id,
+        target=turn.run_id,
+        after={"feedback": feedback, "correction": correction_text},
+    )
+    if feedback == "not_what_i_meant":
+        return Turn(
+            run_id=uuid.uuid4().hex,
+            workspace_id=turn.workspace_id,
+            user_id=turn.user_id,
+            question=correction_text or turn.question,
+        )
+    return None
