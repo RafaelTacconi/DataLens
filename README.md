@@ -1,6 +1,7 @@
 # DataLens-v1
 
 <!-- badges:start · written by verify_build.py --release · do not edit -->
+![python](https://img.shields.io/badge/python-3.12+-blue) ![gate](https://img.shields.io/badge/gate-GO-brightgreen) ![tests](https://img.shields.io/badge/tests-128_passed-brightgreen) ![framework](https://img.shields.io/badge/framework-project--core_v1.1-informational) ![released](https://img.shields.io/badge/released-v1.0.0_2026--10--03-blue) ![kind](https://img.shields.io/badge/kind-application_an-lightgrey)
 <!-- badges:end -->
 
 > **The one thing to know first:** the app never runs SQL the language model
