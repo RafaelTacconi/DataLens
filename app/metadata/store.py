@@ -7,6 +7,7 @@ different file from every target business database (SDD §4, §10).
 """
 
 import datetime
+import json
 import sqlite3
 
 _SCHEMA = """
@@ -162,3 +163,42 @@ def create_workspace(conn, workspace_id, name, target_db_path,
         (workspace_id, name, target_db_path, egress_level, _now()),
     )
     conn.commit()
+
+
+def store_query_run(conn, workspace_id, user_id, question, canonical_sql,
+                    result_metadata=None):
+    """Store a completed query run in history (R29).
+
+    Args:
+        conn: the metadata sqlite3 connection.
+        workspace_id: the workspace the query ran in.
+        user_id: the user who asked the question.
+        question: the user's natural-language question.
+        canonical_sql: the executed canonical SQL.
+        result_metadata: optional result metadata, serialised to JSON.
+    """
+    conn.execute(
+        "INSERT INTO query_runs (workspace_id, user_id, question, "
+        "canonical_sql, result_metadata_json, created_at) "
+        "VALUES (?, ?, ?, ?, ?, ?)",
+        (workspace_id, user_id, question, canonical_sql,
+         json.dumps(result_metadata) if result_metadata else None, _now()),
+    )
+    conn.commit()
+
+
+def get_query_history(conn, workspace_id):
+    """Return the stored query runs for a workspace (R29).
+
+    Args:
+        conn: the metadata sqlite3 connection.
+        workspace_id: the workspace.
+
+    Returns:
+        A list of dicts, one per stored run.
+    """
+    rows = conn.execute(
+        "SELECT * FROM query_runs WHERE workspace_id=? ORDER BY id",
+        (workspace_id,),
+    ).fetchall()
+    return [dict(r) for r in rows]
