@@ -9,7 +9,7 @@ import uuid
 from app.metadata.audit import append_audit
 from app.models.contracts import Turn
 from app.sql.canonical import canonicalize_sql
-from app.sql.validator import validate_sql
+from app.sql.validator import ValidationError, validate_sql
 
 
 def run_analysis(plan, executor_fn):
@@ -65,6 +65,41 @@ def generate_and_validate_sql(provider, plan, schema, allowed_tables):
     draft = provider.generate_sql({"plan": plan})
     validate_sql(draft, schema, allowed_tables, plan)
     return canonicalize_sql(draft)
+
+
+def generate_sql_with_retries(provider, plan, schema, allowed_tables,
+                              max_attempts=3):
+    """Generate and validate SQL, retrying up to the attempt limit (R38).
+
+    Args:
+        provider: an LLMProvider.
+        plan: the approved QueryPlan.
+        schema: the target database schema.
+        allowed_tables: the exposed-table allow-list.
+        max_attempts: the maximum total SQL attempts.
+
+    Returns:
+        The canonical SQL string.
+
+    Raises:
+        ValidationError: if the draft never validates within the limit.
+    """
+    last_error = None
+    for _ in range(max_attempts):
+        try:
+            return generate_and_validate_sql(provider, plan, schema,
+                                             allowed_tables)
+        except ValidationError as err:
+            last_error = err
+    raise last_error
+
+
+def timeout_message():
+    """The message shown when a query times out (R38).
+
+    A timeout is not auto-retried; the user is asked to narrow the request.
+    """
+    return "The query was too expensive. Please narrow the request."
 
 
 def record_feedback(conn, turn, feedback, correction_text=None):
