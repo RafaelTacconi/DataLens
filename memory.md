@@ -18,18 +18,17 @@ down.*
   are expected and harmless (`.gitattributes` keeps the hook's line endings LF).
 
 ## Handoff state
-Current phase: C — Build
-Phase done condition: the artifact test FIRST (C0), then test-first checkpoints C1..Cn
-Phase status: PASSED TO: C
+Current phase: R — Release
+Phase done condition: clean-checkout proof, README for a stranger, version row, --release GO, tag
+Phase status: PASSED TO: R
 
 ## Blockers (current)
 - none
 
 ## Resume instructions
 FIRST: activate the venv — Windows: .venv\Scripts\activate
-Next action: C0 — write the artifact test first (tests/test_artifact.py)
-against the synthetic fixture with a scripted LLM stand-in, then build the
-checkpoints C1..Cn test-first.
+Next action: R1 — prove the build from a clean checkout, then R2 (README),
+R3 (version row + --release GO + tag).
 
 *Everything above this line is CURRENT and gets overwritten. Everything below
 is a RECORD and is only ever appended to.*
@@ -190,6 +189,7 @@ place.*
 | Phase | Checkpoints run | Back-and-forth exchanges | Which felt unnecessary |
 |-------|-----------------|--------------------------|------------------------|
 | B | B0–B4 (5) | 4 (B1 batch, proposals, G0, G1) | none — the batched B1 questions and the two approval turns were all necessary |
+| C | C0–C46 (47) | 0 (ran continuously) | none — every checkpoint earned its place; the artifact test drove the build |
 
 **Be blunt in the last column.** "B1 — three turns re-asking what the design
 document already said" is worth more than "fine".

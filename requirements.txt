@@ -21,3 +21,4 @@ sqlglot==30.21.0
 polars==1.44.2
 pydantic==2.13.5
 streamlit==1.64.0
+openai==3.24.0  # not imported: the concrete provider is selected at runtime; the interface is provider-neutral

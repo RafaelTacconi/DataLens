@@ -12,13 +12,19 @@ NOW = datetime.datetime(2026, 5, 15, 12, 0, 0, tzinfo=datetime.timezone.utc)
 def test_resolve_this_year():
     start, end = resolve_time_intent({"kind": "this_year"}, now=NOW)
     assert start == "2026-01-01"
+    assert end == "2026-12-31"
+
+
+def test_resolve_year_to_date():
+    start, end = resolve_time_intent({"kind": "year_to_date"}, now=NOW)
+    assert start == "2026-01-01"
     assert end == "2026-05-15"
 
 
 def test_resolve_this_month():
     start, end = resolve_time_intent({"kind": "this_month"}, now=NOW)
     assert start == "2026-05-01"
-    assert end == "2026-05-15"
+    assert end == "2026-05-31"
 
 
 def test_resolve_last_month():

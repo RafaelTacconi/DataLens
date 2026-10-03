@@ -6,10 +6,18 @@ and no UI rendering (Guide §4). It grows checkpoint by checkpoint.
 
 import uuid
 
+from app.analysis.facts import build_facts
+from app.config.settings import load_settings
+from app.db.executor import execute_query
+from app.db.schema import inspect_schema
+from app.llm.structured_output import parse_interpretation
 from app.metadata.audit import append_audit
 from app.models.contracts import QueryPlan, Turn
 from app.sql.canonical import canonicalize_sql
+from app.sql.plan_checker import build_plan, plan_to_plain
 from app.sql.validator import ValidationError, validate_sql
+from app.core.time_resolution import resolve_time_intent
+from app.ui.transparency import build_transparency
 
 
 def run_analysis(plan, executor_fn):
@@ -133,6 +141,71 @@ def record_feedback(conn, turn, feedback, correction_text=None):
             question=correction_text or turn.question,
         )
     return None
+
+
+def run_turn(question, db_path, llm, user_id, workspace_id, settings=None):
+    """Run a full turn end to end: interpret, plan, generate, execute, explain.
+
+    Args:
+        question: the user's natural-language question.
+        db_path: the resolved target database path.
+        llm: an LLMProvider (replaced by a stand-in in tests).
+        user_id: the current user.
+        workspace_id: the workspace.
+        settings: optional Settings; defaults to the environment.
+
+    Returns:
+        A Turn with the result, canonical SQL and transparency record, or an
+        error set on the turn.
+    """
+    settings = settings or load_settings({})
+    turn = Turn(run_id=uuid.uuid4().hex, workspace_id=workspace_id,
+                user_id=user_id, question=question)
+    try:
+        interp = parse_interpretation(llm.interpret({"question": question}))
+        turn.interpretation = interp
+
+        plan = build_plan(interp)
+        turn.plan = plan
+
+        resolved = ()
+        if interp.time_intent:
+            resolved = resolve_time_intent(interp.time_intent)
+
+        schema = inspect_schema(db_path)
+        allowed = [t for t in plan.tables if t in schema]
+
+        canonical = generate_and_validate_sql(llm, plan, schema, allowed)
+        turn.canonical_sql = canonical
+
+        df, metrics = execute_query(db_path, canonical, allowed,
+                                    row_cap=settings.row_cap)
+        turn.result = df
+
+        build_facts(df)
+
+        model = getattr(llm, "model", "standin")
+        transparency = build_transparency(
+            question=question,
+            understanding=plan_to_plain(plan),
+            tables_used=plan.tables,
+            why_sources="the plan chose these tables",
+            columns_used=plan.columns,
+            plan=plan.model_dump(),
+            canonical_sql=canonical,
+            execution=metrics,
+            assumptions=[],
+            resolved_period=resolved,
+            result_summary=f"{metrics['rows_returned']} rows",
+            validation_status="validated",
+            provenance={"model": model},
+        )
+        turn.transparency = transparency
+        turn.stage = "EXPLAINED"
+    except Exception as err:
+        turn.error = str(err)
+        turn.stage = "FAILED"
+    return turn
 
 
 def apply_followup(plan, followup):
