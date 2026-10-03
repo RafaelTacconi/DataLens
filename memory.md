@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
-Status: IN PROGRESS
+Status: COMPLETE
 Current checkpoint: R3
-Last updated: 2026-10-03T19:19:00Z
+Last updated: 2026-10-03T19:20:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -20,7 +20,7 @@ down.*
 ## Handoff state
 Current phase: R — Release
 Phase done condition: clean-checkout proof, README for a stranger, version row, --release GO, tag
-Phase status: PASSED TO: R
+Phase status: PASSED TO: R (release v1.0.0 in progress)
 
 ## Blockers (current)
 - none

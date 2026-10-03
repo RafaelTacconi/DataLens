@@ -6,6 +6,7 @@ release gate (wave 40).
 
 | Version | Date | Builder | Branch/tag | Description (hotfix rows: add one root-cause sentence) |
 |---------|------|---------|-----------|--------------------------------------------------------|
+| v1.0.0 | 2026-10-03 | rafae@Tacconi | v1.0.0 | First release: a safe, transparent Streamlit app that answers natural-language questions about SQLite data read-only. |
 
 
 **A row describes what the tag CONTAINS, never what happened afterwards
