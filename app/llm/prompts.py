@@ -8,6 +8,26 @@ security controls; code remains the enforcement layer.
 PROMPT_VERSION = "1.0"
 
 
+def prompt_version():
+    """The current prompt-template version (R42)."""
+    return PROMPT_VERSION
+
+
+def record_prompt_version(transparency):
+    """Record the prompt-template version on a turn's transparency record.
+
+    Args:
+        transparency: a TransparencyRecord.
+
+    Returns:
+        The same record with the version added to its provenance.
+    """
+    provenance = dict(transparency.provenance)
+    provenance["prompt_version"] = PROMPT_VERSION
+    transparency.provenance = provenance
+    return transparency
+
+
 def build_sql_prompt(plan):
     """Build the prompt that asks the LLM to draft SQL from a plan.
 
