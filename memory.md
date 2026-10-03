@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C39
-Last updated: 2026-10-03T07:19:00Z
+Current checkpoint: C40
+Last updated: 2026-10-03T07:21:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -145,6 +145,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C36 | PASS | 2026-10-03 | 20261003T071359Z_check.json | CONTRACT + TESTS PASS; history view shows stored runs; cache-key test made robust |
 | C37 | PASS | 2026-10-03 | 20261003T071640Z_check.json | CONTRACT + TESTS PASS; verified query library, needs_recheck on change |
 | C38 | PASS | 2026-10-03 | 20261003T071841Z_check.json | CONTRACT + TESTS PASS; evaluation set compares results |
+| C39 | PASS | 2026-10-03 | 20261003T072038Z_check.json | CONTRACT + TESTS PASS; analysis mode, each output names its source |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,

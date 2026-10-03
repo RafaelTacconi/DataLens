@@ -12,6 +12,27 @@ from app.sql.canonical import canonicalize_sql
 from app.sql.validator import validate_sql
 
 
+def run_analysis(plan, executor_fn):
+    """Run a multi-step analysis, each output naming its source (R32).
+
+    Args:
+        plan: a QueryPlan with analysis_steps.
+        executor_fn: a callable that runs one step and returns a DataFrame.
+
+    Returns:
+        A list of dicts, each with "source", "detail" and "rows".
+    """
+    outputs = []
+    for step in plan.analysis_steps:
+        df = executor_fn(step)
+        outputs.append({
+            "source": step.kind,
+            "detail": step.detail,
+            "rows": df.to_dicts(),
+        })
+    return outputs
+
+
 def needs_clarification(interpretation):
     """Whether an interpretation has material ambiguities that must be asked.
 
