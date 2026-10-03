@@ -7,7 +7,7 @@ and no UI rendering (Guide §4). It grows checkpoint by checkpoint.
 import uuid
 
 from app.metadata.audit import append_audit
-from app.models.contracts import Turn
+from app.models.contracts import QueryPlan, Turn
 from app.sql.canonical import canonicalize_sql
 from app.sql.validator import ValidationError, validate_sql
 
@@ -133,3 +133,22 @@ def record_feedback(conn, turn, feedback, correction_text=None):
             question=correction_text or turn.question,
         )
     return None
+
+
+def apply_followup(plan, followup):
+    """Apply a follow-up to a structured plan (R41).
+
+    A follow-up modifies the previous structured plan, not prose, and the
+    change is stated for the transparency panel.
+
+    Args:
+        plan: the previous QueryPlan.
+        followup: the follow-up text.
+
+    Returns:
+        A tuple (new_plan, change_note).
+    """
+    new_plan = QueryPlan(**plan.model_dump())
+    new_plan.filters.append({"text": followup})
+    change = f"Added filter: {followup}"
+    return new_plan, change

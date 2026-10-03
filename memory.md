@@ -1,7 +1,7 @@
 # memory.md — DataLens-v1 build log
 Status: IN PROGRESS
-Current checkpoint: C44
-Last updated: 2026-10-03T14:59:00Z
+Current checkpoint: C45
+Last updated: 2026-10-03T15:01:00Z
 
 ## Environment
 *Recorded ONCE, at A2, and read by every session afterwards. Shell and path
@@ -150,6 +150,7 @@ builder turns it on. Nearly every minted row is `DEFAULT`.
 | C41 | PASS | 2026-10-03 | 20261003T145445Z_check.json | CONTRACT + TESTS PASS; charts built from result DataFrame |
 | C42 | PASS | 2026-10-03 | 20261003T145651Z_check.json | CONTRACT + TESTS PASS; error handling: retry limit, timeout message |
 | C43 | PASS | 2026-10-03 | 20261003T145845Z_check.json | CONTRACT + TESTS PASS; honest execution metrics only |
+| C44 | PASS | 2026-10-03 | 20261003T150035Z_check.json | CONTRACT + TESTS PASS; follow-ups modify the structured plan |
 
 **Status values.** `PASS` claims something a command proved, and cites the
 receipt. `DONE` is ONLY for set-up and contract-writing rows (A0–A2,
