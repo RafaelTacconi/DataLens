@@ -1,4 +1,4 @@
-"""Query executor (R11).
+"""Query executor (R11, R40).
 
 Executes already-validated canonical SQL through a guarded read-only
 connection and returns a Polars DataFrame plus honest execution metrics. Uses
@@ -9,6 +9,22 @@ import polars as pl
 
 from app.db.authorizer import make_authorizer
 from app.db.connection import open_readonly_connection
+
+# The only metrics the system actually measures (SDD §23).
+MEASURED_METRICS = {"duration_seconds", "rows_returned", "truncated",
+                    "plan_shape"}
+
+
+def honest_metrics(metrics):
+    """Return only the metrics the system actually measures (R40).
+
+    Args:
+        metrics: a dict of candidate metrics.
+
+    Returns:
+        A dict with only the measured metrics.
+    """
+    return {k: v for k, v in metrics.items() if k in MEASURED_METRICS}
 
 
 def execute_query(db_path, canonical_sql, allowed_tables, row_cap=10000):
